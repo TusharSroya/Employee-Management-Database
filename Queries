@@ -1,0 +1,35 @@
+1) Lists the names (Pname) and numbers (PNum) of all projects which the Data Conversion department is working on:
+
+Select DISTINCT P.PNum, PName from Project P
+RIGHT JOIN Assignment A ON P.PNum = A.PNum 
+RIGHT JOIN Employee E ON A.EID = E.EID
+WHERE E.DID = (Select Department.DID from Department WHERE Department.DName LIKE '%Data Conversion%');
+
+2) Lists the names and ids of those employees whose manager is from the Client Services department:
+
+SELECT E.EID, E.EName from Employee E
+INNER JOIN Employee E2 ON E.MID = E2.EID
+where E2.DID = (Select Department.DID from Department WHERE Department.DName LIKE '%Client Services%');
+
+3) Lists the names and ids of the employees who worked on more than one project:
+
+SELECT E.ENAME, E.EID FROM EMPLOYEE E
+INNER JOIN Assignment A 
+ON E.EID = A.EID
+GROUP BY E.ENAME, E.EID
+HAVING COUNT(A.EID) > 1;
+
+4) Increases the salaries by $500 for those employees who worked more than 15 hours on assigned projects. Once completed, it displays the content of the Employee table:
+
+UPDATE EMPLOYEE E
+SET E.SALARY = (E.SALARY) +500
+WHERE E.EID IN(
+Select E.EID from Employee E
+RIGHT JOIN Assignment A on E.EID = A.EID
+Group by E.EID
+HAVING SUM (A.Hours)>15
+);
+
+Commit;
+
+Select * from Employee;
